@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glitch to Kanji Morph</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #9ec86d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    svg {
+      width: 500px;
+      height: 500px;
+      background-color: #9ec86d;
+    }
+    text {
+      font-family: 'Arial', sans-serif;
+      fill: white;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <svg id="glitchCanvas" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"></svg>
+
+  <script>
+    const svg = document.getElementById('glitchCanvas');
+    const particles = [];
+    const numParticles = 30; // Number of initial particles
+    const glitchColor = '#F86624'; // Color of glitch particles
+    const kanjiColor = '#ffffff';
+    let morphing = false;
+
+    // Create particles at random positions
+    function createParticles() {
+      for (let i = 0; i < numParticles; i++) {
+        const x = Math.random() * 500;
+        const y = Math.random() * 500;
+        const particle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        particle.setAttribute('cx', x);
+        particle.setAttribute('cy', y);
+        particle.setAttribute('r', 5);
+        particle.setAttribute('fill', glitchColor);
+        svg.appendChild(particle);
+        particles.push(particle);
+      }
+    }
+
+    // Function to connect particles with lines
+    function connectParticles() {
+      particles.forEach((p1, index1) => {
+        particles.forEach((p2, index2) => {
+          if (index1 !== index2) {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', p1.getAttribute('cx'));
+            line.setAttribute('y1', p1.getAttribute('cy'));
+            line.setAttribute('x2', p2.getAttribute('cx'));
+            line.setAttribute('y2', p2.getAttribute('cy'));
+            line.setAttribute('stroke', glitchColor);
+            line.setAttribute('stroke-width', 1);
+            line.setAttribute('opacity', Math.random());
+            svg.appendChild(line);
+
+            // Randomly expand lines to create the glitch effect
+            setTimeout(() => {
+              const newX = Math.random() * 500;
+              const newY = Math.random() * 500;
+              line.setAttribute('x2', newX);
+              line.setAttribute('y2', newY);
+            }, 500 + Math.random() * 2000);
+          }
+        });
+      });
+    }
+
+    // Morphing to Kanji
+    function morphToKanji() {
+      morphing = true;
+      svg.innerHTML = ''; // Clear the glitch
+
+      // Create Kanji
+      const kanji = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      kanji.setAttribute('x', '50%');
+      kanji.setAttribute('y', '40%');
+      kanji.setAttribute('text-anchor', 'middle');
+      kanji.setAttribute('fill', kanjiColor);
+      kanji.textContent = 'オサモ'; // Example Kanji
+      svg.appendChild(kanji);
+
+      // Create Scientific Name
+      const scientificName = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      scientificName.setAttribute('x', '50%');
+      scientificName.setAttribute('y', '60%');
+      scientificName.setAttribute('text-anchor', 'middle');
+      scientificName.setAttribute('fill', kanjiColor);
+      scientificName.textContent = 'Myriophyllum aquaticum';
+      svg.appendChild(scientificName);
+    }
+
+    // Animate particles and glitch spread
+    function animateGlitch() {
+      particles.forEach(particle => {
+        const newX = Math.random() * 500;
+        const newY = Math.random() * 500;
+        particle.setAttribute('cx', newX);
+        particle.setAttribute('cy', newY);
+      });
+
+      if (!morphing) {
+        requestAnimationFrame(animateGlitch); // Continue glitch animation
+      }
+    }
+
+    // Start the glitch effect
+    createParticles();
+    connectParticles();
+    animateGlitch();
+
+    // Morph to Kanji after a delay
+    setTimeout(() => {
+      morphToKanji();
+    }, 8000); // Morph after 8 seconds
+  </script>
+</body>
+</html>

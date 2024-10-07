@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glitch to Kanji Metamorphosis</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #9ec86d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    svg {
+      width: 500px;
+      height: 500px;
+    }
+    text {
+      font-family: 'Arial', sans-serif;
+      fill: white;
+      font-size: 24px;
+    }
+    .line {
+      stroke: red;
+      stroke-width: 0.5;
+      stroke-dasharray: 500;
+      stroke-dashoffset: 500;
+      animation: drawLine 10s linear forwards;
+    }
+    @keyframes drawLine {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .gameOfLife {
+      animation: flicker 0.5s infinite alternate;
+    }
+    @keyframes flicker {
+      0% { opacity: 0.2; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<svg id="glitchCanvas" viewBox="0 0 500 500"></svg>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+
+<script>
+  const svg = document.getElementById('glitchCanvas');
+  const snapSvg = Snap(svg); // Initialize Snap.svg
+  let points = [];
+  let lines = [];
+
+  // Função para criar círculos vermelhos
+  function createPoint(cx, cy, r) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', cx);
+    circle.setAttribute('cy', cy);
+    circle.setAttribute('r', r);
+    circle.setAttribute('fill', 'red');
+    circle.setAttribute('opacity', '1');
+    svg.appendChild(circle);
+    points.push(circle);
+  }
+
+  // Fase 1: Inicializa com poucos pontos
+  function initializePoints() {
+    for (let i = 0; i < 5; i++) {
+      const cx = Math.random() * 500;
+      const cy = Math.random() * 500;
+      const r = Math.random() * 3 + 1; // Tamanho variável
+      createPoint(cx, cy, r);
+    }
+  }
+
+  // Fase 2: Multiplica os pontos (Game of Life)
+  function multiplyPoints() {
+    points.forEach(point => {
+      const cx = Math.random() * 500;
+      const cy = Math.random() * 500;
+      const r = Math.random() * 3 + 1;
+      createPoint(cx, cy, r);
+    });
+
+    // Aplica o efeito de piscar (Game of Life)
+    points.forEach(point => {
+      point.classList.add('gameOfLife');
+    });
+
+    // Remover o efeito "Game of Life" após 10 segundos
+    setTimeout(() => {
+      points.forEach(point => {
+        point.classList.remove('gameOfLife');
+      });
+    }, 10000);
+  }
+
+  // Fase 3: Conectar os pontos com linhas animadas
+  function connectPoints() {
+    points.forEach((p1, index1) => {
+      points.forEach((p2, index2) => {
+        if (index1 !== index2) {
+          const line = snapSvg.line(
+            p1.getAttribute('cx'),
+            p1.getAttribute('cy'),
+            p2.getAttribute('cx'),
+            p2.getAttribute('cy')
+          );
+          line.attr({
+            stroke: 'red',
+            strokeWidth: 0.5,
+            strokeDasharray: 500,
+            strokeDashoffset: 500,
+            animation: 'drawLine 10s linear forwards'
+          });
+          lines.push(line);
+        }
+      });
+    });
+  }
+
+  // Fase 4: Morph para o Kanji usando Snap.svg
+  function morphToKanji() {
+    // Agrupar pontos e linhas para transformá-los juntos
+    const group = snapSvg.group(...points, ...lines);
+
+    // Path do Kanji
+    const kanjiPath = snapSvg.path(`M138.4,153.3c4.5-2.8,8.6-6.2,13.3-10.7,7-6.7,12.2-12.8,17.2-20.5-8.4,1.3-13.4,2.5-17.3,4.1-1.1.4-1.6.6-2.2.6-1.5,0-3.5-1.4-5.3-3.8-1.3-1.6-2-3.2-2-3.9s0-.5.3-.8c2.2,2.6,4.3,3.7,7.2,3.7s14.7-1.5,22.1-2.7c0-6.2-.4-9.3-1.1-10.5-.8-1.5-2.9-2.7-5.3-3.2.6-.7.8-.8,2.3-.8,2.2,0,5.7.8,7.8,2,1.5.8,2,1.3,2,2.5s0,.8-.4,1.5c-.9,2.1-1.3,4.6-1.4,7.9,5.8-.8,7.6-1.3,10.6-2.5.8-.3,1-.4,1.5-.4,2.1,0,6.2,2.6,6.2,3.9s-.6,1.3-2.4,1.3-1.2,0-2.5,0c-1.7,0-3-.1-3.9-.1-2.2,0-4.4.1-9.6.6,0,.9,0,1.8,0,2.2,0,6.1.4,14,1.1,22.6.3,3.4.4,6,.4,7.6,0,3.8-1.8,7.4-3.6,7.4s-1.5-.5-2-1.5c-.6-1.5-1.1-2.2-2.5-3.4q-1.7-1.3-9.8-5.8l.4-.9c6.4,2,9.7,2.9,12.8,3.6,0-1.4.1-4.8.1-8.7s0-3.9,0-6.6c-.1-4.6-.2-7.7-.2-9.3s0-1.7,0-3c-3,4.7-5.6,7.8-10.9,13-7.4,7.2-16,13.2-22.2,15.6l-.6-.9Z`);
+
+    // Fazer o morphing da estrutura de pontos e linhas para o kanjiPath
+    group.animate({ d: kanjiPath.attr('d') }, 3000, mina.easeinout); // Morphing suave para o Kanji
+  }
+
+  // Sequência de eventos
+  function startAnimation() {
+    // Fase 1: Iniciar com poucos pontos pequenos
+    initializePoints();
+
+    // Fase 2: Multiplicar pontos e iniciar efeito de "Game of Life"
+    setTimeout(() => {
+      multiplyPoints();
+    }, 10000); // Após 10 segundos
+
+    // Fase 3: Conectar os pontos com linhas animadas
+    setTimeout(() => {
+      connectPoints(); // Conectar pontos
+    }, 20000); // Após 20 segundos
+
+    // Fase 4: Morph para Kanji
+    setTimeout(() => {
+      morphToKanji();
+    }, 30000); // Após 30 segundos
+  }
+
+  // Iniciar a animação quando a página carregar
+  startAnimation();
+
+</script>
+
+</body>
+</html>

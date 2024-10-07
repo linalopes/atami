@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plants</title>
+    <style>
+        body {
+            background-color: #9ec86d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #kanji {
+            stroke: red;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0;
+            transition: opacity 3s ease-in, stroke-dashoffset 5s linear;
+        }
+
+        .scientific-name {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            fill: black;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Your SVG of the Japanese kanji -->
+    <svg id="kanji" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 600" width="300" height="600">
+        <!-- Example Path (replace with your actual SVG content) -->
+        <text transform="translate(35.18 168.57)">
+            <tspan x="0" y="0">オ</tspan>
+        </text>
+        <text transform="translate(91.81 88.23)">
+            <tspan x="0" y="0">オ</tspan>
+        </text>
+        <text transform="translate(71.64 310.8)">
+            <tspan x="0" y="0">フ</tspan>
+        </text>
+        <text transform="translate(41.63 427.01)">
+            <tspan x="0" y="0">サ</tspan>
+        </text>
+        <text transform="translate(26.31 495.68)">
+            <tspan x="0" y="0">モ</tspan>
+        </text>
+    </svg>
+
+    <svg class="scientific-name" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="25">Myriophyllum aquaticum</text>
+    </svg>
+
+    <script>
+        // Timing variables
+        const kanjiAppearTime = 15000; // 15 seconds
+        const kanjiDissolveTime = 3000; // 3 seconds
+        const scientificNameAppearTime = 5000; // 5 seconds
+        const scientificNameDissolveTime = 3000; // 3 seconds
+
+        // kanji animation function
+        function animateKanji() {
+            const kanji = document.getElementById('kanji');
+            kanji.style.opacity = 1;
+            setTimeout(() => {
+                kanji.querySelector('path').style.strokeDashoffset = 0;
+            }, 1000); // Delay the drawing by 1 second
+
+            setTimeout(() => {
+                kanji.style.opacity = 0; // Dissolve after a few seconds
+                animateScientificName();
+            }, kanjiAppearTime + kanjiDissolveTime);
+        }
+
+        // Scientific name animation function
+        function animateScientificName() {
+            const scientificName = document.querySelector('.scientific-name');
+            scientificName.style.opacity = 1;
+
+            setTimeout(() => {
+                scientificName.style.opacity = 0; // Dissolve after a few seconds
+            }, scientificNameAppearTime + scientificNameDissolveTime);
+        }
+
+        // Start the animation
+        setTimeout(animateKanji, 1000); // Delay the start by 1 second
+    </script>
+</body>
+
+</html>

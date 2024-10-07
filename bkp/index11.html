@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glitch to Kanji Metamorphosis</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #9ec86d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    svg {
+      width: 500px;
+      height: 500px;
+    }
+    text {
+      font-family: 'Arial', sans-serif;
+      fill: white;
+      font-size: 24px;
+    }
+    .line {
+      stroke: red;
+      stroke-width: 0.5;
+      stroke-dasharray: 500;
+      stroke-dashoffset: 500;
+      animation: drawLine 10s linear forwards;
+    }
+    @keyframes drawLine {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .gameOfLife {
+      animation: flicker 0.5s infinite alternate;
+    }
+    @keyframes flicker {
+      0% { opacity: 0.2; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<svg id="glitchCanvas" viewBox="0 0 500 500"></svg>
+
+<script>
+  const svg = document.getElementById('glitchCanvas');
+  let points = [];
+
+  // Função para criar círculos vermelhos
+  function createPoint(cx, cy, r) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', cx);
+    circle.setAttribute('cy', cy);
+    circle.setAttribute('r', r);
+    circle.setAttribute('fill', 'red');
+    circle.setAttribute('opacity', '1');
+    svg.appendChild(circle);
+    points.push(circle);
+  }
+
+  // Fase 1: Inicializa com poucos pontos
+  function initializePoints() {
+    for (let i = 0; i < 5; i++) {
+      const cx = Math.random() * 500;
+      const cy = Math.random() * 500;
+      const r = Math.random() * 3 + 1; // Tamanho variável
+      createPoint(cx, cy, r);
+    }
+  }
+
+  // Fase 2: Multiplica os pontos (Game of Life)
+  function multiplyPoints() {
+    points.forEach(point => {
+      const cx = Math.random() * 500;
+      const cy = Math.random() * 500;
+      const r = Math.random() * 3 + 1;
+      createPoint(cx, cy, r);
+    });
+
+    // Aplica o efeito de piscar (Game of Life)
+    points.forEach(point => {
+      point.classList.add('gameOfLife');
+    });
+
+    // Remover o efeito "Game of Life" após 10 segundos
+    setTimeout(() => {
+      points.forEach(point => {
+        point.classList.remove('gameOfLife');
+      });
+    }, 10000);
+  }
+
+  // Fase 3: Conectar os pontos com linhas animadas
+  function connectPoints() {
+    points.forEach((p1, index1) => {
+      points.forEach((p2, index2) => {
+        if (index1 !== index2) {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', p1.getAttribute('cx'));
+          line.setAttribute('y1', p1.getAttribute('cy'));
+          line.setAttribute('x2', p2.getAttribute('cx'));
+          line.setAttribute('y2', p2.getAttribute('cy'));
+          line.classList.add('line');
+          svg.appendChild(line);
+        }
+      });
+    });
+  }
+
+  // Fase 4: Morph para o Kanji
+  function morphToKanji() {
+    svg.innerHTML = ''; // Limpa os pontos e linhas
+
+    // Criar o Kanji como texto
+    const kanji = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    kanji.setAttribute('x', '50%');
+    kanji.setAttribute('y', '50%');
+    kanji.setAttribute('text-anchor', 'middle');
+    kanji.setAttribute('dominant-baseline', 'middle');
+    kanji.setAttribute('fill', 'white');
+    kanji.textContent = 'オサモ'; // Exemplo de Kanji
+    svg.appendChild(kanji);
+  }
+
+  // Sequência de eventos
+  function startAnimation() {
+    // Fase 1: Iniciar com poucos pontos pequenos
+    initializePoints();
+
+    // Fase 2: Multiplicar pontos e iniciar efeito de "Game of Life"
+    setTimeout(() => {
+      multiplyPoints();
+    }, 10000); // Após 10 segundos
+
+    // Fase 3: Conectar os pontos com linhas animadas
+    setTimeout(() => {
+      connectPoints(); // Conectar pontos
+    }, 20000); // Após 20 segundos
+
+    // Fase 4: Morph para Kanji
+    setTimeout(() => {
+      morphToKanji();
+    }, 30000); // Após 30 segundos
+  }
+
+  // Iniciar a animação quando a página carregar
+  startAnimation();
+
+</script>
+
+</body>
+</html>

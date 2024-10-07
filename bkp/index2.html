@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plants</title>
+    <style>
+        body {
+            background-color: #9ec86d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #kanji {
+            stroke: red;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0;
+            transition: opacity 3s ease-in, stroke-dashoffset 5s linear;
+        }
+
+        .scientific-name {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            fill: black;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+        }
+
+        .line {
+            stroke: red;
+            stroke-width: 2;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+        }
+
+        /* Animation for lines moving towards kanji */
+        @keyframes move-line {
+            from {
+                stroke-dashoffset: 200;
+            }
+            to {
+                stroke-dashoffset: 0;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Kanji SVG -->
+    <svg id="kanji" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 600" width="300" height="600">
+        <text transform="translate(35.18 168.57)">
+            <tspan x="0" y="0">オ</tspan>
+        </text>
+        <text transform="translate(91.81 88.23)">
+            <tspan x="0" y="0">オ</tspan>
+        </text>
+        <text transform="translate(71.64 310.8)">
+            <tspan x="0" y="0">フ</tspan>
+        </text>
+        <text transform="translate(41.63 427.01)">
+            <tspan x="0" y="0">サ</tspan>
+        </text>
+        <text transform="translate(26.31 495.68)">
+            <tspan x="0" y="0">モ</tspan>
+        </text>
+    </svg>
+
+    <!-- Animated lines moving towards kanji -->
+    <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+        <line class="line" x1="0" y1="0" x2="150" y2="300" stroke-dasharray="200" />
+        <line class="line" x1="100%" y1="0" x2="150" y2="300" stroke-dasharray="200" />
+        <line class="line" x1="0" y1="100%" x2="150" y2="300" stroke-dasharray="200" />
+        <line class="line" x1="100%" y1="100%" x2="150" y2="300" stroke-dasharray="200" />
+    </svg>
+
+    <!-- Scientific name -->
+    <svg class="scientific-name" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="25">Myriophyllum aquaticum</text>
+    </svg>
+
+    <script>
+        // Timing variables
+        const kanjiAppearTime = 15000; // 15 seconds
+        const kanjiDissolveTime = 3000; // 3 seconds
+        const scientificNameAppearTime = 5000; // 5 seconds
+        const scientificNameDissolveTime = 3000; // 3 seconds
+
+        // Animate lines moving towards the kanji
+        function animateLines() {
+            const lines = document.querySelectorAll('.line');
+            lines.forEach((line, index) => {
+                line.style.opacity = 1;
+                line.style.animation = `move-line 5s ease-in forwards ${index * 1.5}s`; // Stagger animations
+            });
+        }
+
+        // Kanji animation function
+        function animateKanji() {
+            const kanji = document.getElementById('kanji');
+            kanji.style.opacity = 1;
+            setTimeout(() => {
+                kanji.querySelector('path').style.strokeDashoffset = 0;
+            }, 5000); // Delay the kanji drawing by 5 seconds
+
+            setTimeout(() => {
+                kanji.style.opacity = 0; // Dissolve after a few seconds
+                animateScientificName();
+            }, kanjiAppearTime + kanjiDissolveTime);
+        }
+
+        // Scientific name animation function
+        function animateScientificName() {
+            const scientificName = document.querySelector('.scientific-name');
+            scientificName.style.opacity = 1;
+
+            setTimeout(() => {
+                scientificName.style.opacity = 0; // Dissolve after a few seconds
+            }, scientificNameAppearTime + scientificNameDissolveTime);
+        }
+
+        // Start the animations
+        setTimeout(() => {
+            animateLines();
+            setTimeout(animateKanji, 8000); // Delay the kanji animation to sync with line animations
+        }, 1000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 500 500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        font-size: 100.3px;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        isolation: isolate;
+      }
+
+      .cls-2, .cls-4, .cls-5, .cls-6, .cls-7 {
+        font-family: HiraMinProN-W3-83pv-RKSJ-H, 'Hiragino Mincho ProN';
+      }
+
+      .cls-4 {
+        font-size: 96.6px;
+      }
+
+      .cls-5 {
+        font-size: 70.1px;
+      }
+
+      .cls-8 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-6 {
+        font-size: 84.1px;
+      }
+
+      .cls-7 {
+        font-size: 73.7px;
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="100" y="232.4" width="300" height="255.7"/>
+    </clipPath>
+  </defs>
+  <!-- Generator: Adobe Illustrator 28.7.1, SVG Export Plug-In . SVG Version: 1.2.0 Build 142)  -->
+  <g>
+    <g id="Layer_1">
+      <g class="cls-3">
+        <text class="cls-5" transform="translate(135.2 183.5)"><tspan x="0" y="0">オ</tspan></text>
+      </g>
+      <g class="cls-3">
+        <text class="cls-2" transform="translate(191.8 103.2)"><tspan x="0" y="0">オ</tspan></text>
+      </g>
+      <g class="cls-3">
+        <text class="cls-6" transform="translate(171.7 280.7)"><tspan x="0" y="0">フ</tspan></text>
+      </g>
+      <g class="cls-3">
+        <text class="cls-4" transform="translate(141.7 396.9)"><tspan x="0" y="0">サ</tspan></text>
+      </g>
+      <g class="cls-8">
+        <g class="cls-3">
+          <text class="cls-7" transform="translate(126.3 465.6)"><tspan x="0" y="0">モ</tspan></text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creative Coding</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    svg {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <svg id="art"></svg>
+
+  <script>
+    const svg = document.getElementById("art");
+    const colors = ["#F9C80E", "#F86624", "#EA3546", "#662E9B", "#43BCCD", "#00A896", "#02C39A"];
+
+    function getRandomColor() {
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function createRect(x, y, width, height, color) {
+      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", x);
+      rect.setAttribute("y", y);
+      rect.setAttribute("width", width);
+      rect.setAttribute("height", height);
+      rect.setAttribute("fill", color);
+      rect.setAttribute("stroke", "#000");
+      rect.setAttribute("stroke-width", "0.5");
+      svg.appendChild(rect);
+
+      // Animate color change
+      setInterval(() => {
+        rect.setAttribute("fill", getRandomColor());
+      }, 1000 + Math.random() * 2000); // Randomize timing
+    }
+
+    function createRandomPattern() {
+      const numberOfShapes = 100;
+      for (let i = 0; i < numberOfShapes; i++) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        const width = Math.random() * 100 + 20; // Random width
+        const height = Math.random() * 100 + 20; // Random height
+        const color = getRandomColor();
+
+        createRect(x, y, width, height, color);
+      }
+    }
+
+    createRandomPattern();
+  </script>
+</body>
+</html>

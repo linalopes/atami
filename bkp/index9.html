@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glitch to Kanji Metamorphosis</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #9ec86d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    svg {
+      width: 500px;
+      height: 500px;
+    }
+    text {
+      font-family: 'Arial', sans-serif;
+      fill: white;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<svg id="glitchCanvas" viewBox="0 0 500 500"></svg>
+
+<script>
+  const svg = document.getElementById('glitchCanvas');
+  const numInitialPoints = 5; // Few initial points
+  let points = [];
+
+  // Create random red circles
+  function createPoint(cx, cy, r) {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', cx);
+    circle.setAttribute('cy', cy);
+    circle.setAttribute('r', r);
+    circle.setAttribute('fill', 'red');
+    circle.setAttribute('opacity', '1');
+    svg.appendChild(circle);
+    points.push(circle);
+  }
+
+  // Create initial points
+  function initializePoints() {
+    for (let i = 0; i < numInitialPoints; i++) {
+      const cx = Math.random() * 500;
+      const cy = Math.random() * 500;
+      const r = Math.random() * 3 + 1; // Small variable sizes
+      createPoint(cx, cy, r);
+    }
+  }
+
+  // Increase the number of points over time (like Game of Life)
+  function multiplyPoints() {
+    const newPoints = [];
+    points.forEach(point => {
+      const cx = Math.random() * 500;
+      const cy = Math.random() * 500;
+      const r = Math.random() * 3 + 1;
+      createPoint(cx, cy, r);
+      newPoints.push(point);
+    });
+    points = points.concat(newPoints);
+  }
+
+  // Glitch effect (flickering)
+  function glitchEffect() {
+    points.forEach(point => {
+      point.setAttribute('opacity', Math.random());
+    });
+  }
+
+  // Stop glitch effect and connect points with lines
+  function connectPoints() {
+    points.forEach((p1, index1) => {
+      points.forEach((p2, index2) => {
+        if (index1 !== index2) {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', p1.getAttribute('cx'));
+          line.setAttribute('y1', p1.getAttribute('cy'));
+          line.setAttribute('x2', p2.getAttribute('cx'));
+          line.setAttribute('y2', p2.getAttribute('cy'));
+          line.setAttribute('stroke', 'red');
+          line.setAttribute('stroke-width', '0.5');
+          svg.appendChild(line);
+        }
+      });
+    });
+  }
+
+  // Morph into Kanji
+  function morphToKanji() {
+    svg.innerHTML = ''; // Clear existing points and lines
+
+    // Create Kanji as text
+    const kanji = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    kanji.setAttribute('x', '50%');
+    kanji.setAttribute('y', '50%');
+    kanji.setAttribute('text-anchor', 'middle');
+    kanji.setAttribute('dominant-baseline', 'middle');
+    kanji.setAttribute('fill', 'white');
+    kanji.textContent = 'オサモ'; // Example Kanji
+    svg.appendChild(kanji);
+  }
+
+  // Sequence of events
+  function startAnimation() {
+    // Stage 1: Initialize small points
+    initializePoints();
+
+    // Stage 2: Multiply points with glitch effect
+    setTimeout(() => {
+      setInterval(glitchEffect, 200); // Start flickering effect
+      multiplyPoints();
+    }, 10000); // After 10 seconds
+
+    // Stage 3: Stop glitch effect and connect points
+    setTimeout(() => {
+      clearInterval(glitchEffect);
+      connectPoints(); // Connect points
+    }, 20000); // After 20 seconds
+
+    // Stage 4: Morph to Kanji
+    setTimeout(() => {
+      morphToKanji();
+    }, 30000); // After 30 seconds
+  }
+
+  // Start animation when the page loads
+  startAnimation();
+</script>
+
+</body>
+</html>
