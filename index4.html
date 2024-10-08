@@ -70,45 +70,51 @@
   }
 
   // Connect points with lines as paths
-  function connectPointsRhizomatic() {
-    points.forEach((p1, index1) => {
-      points.forEach((p2, index2) => {
-        if (index1 !== index2) {
-          // Get the center coordinates of both points (paths)
-          const cx1 = p1.getBBox().x + p1.getBBox().width / 2;
-          const cy1 = p1.getBBox().y + p1.getBBox().height / 2;
-          const cx2 = p2.getBBox().x + p2.getBBox().width / 2;
-          const cy2 = p2.getBBox().y + p2.getBBox().height / 2;
+  function connectPoints() {
+  points.forEach((p1, index1) => {
+    points.forEach((p2, index2) => {
+      if (index1 !== index2) {
+        // Get the center coordinates of both points (paths)
+        const cx1 = p1.getBBox().x + p1.getBBox().width / 2;
+        const cy1 = p1.getBBox().y + p1.getBBox().height / 2;
+        const cx2 = p2.getBBox().x + p2.getBBox().width / 2;
+        const cy2 = p2.getBBox().y + p2.getBBox().height / 2;
 
-          // Introduce random control points to create a more rhizomatic effect (curved path)
-          const controlX1 = (cx1 + cx2) / 2 + (Math.random() * 50 - 25); // Random control point between the two
-          const controlY1 = (cy1 + cy2) / 2 + (Math.random() * 50 - 25); // Adjust randomness for curvature
+        // Generate random control points to make the path curved and organic
+        const controlX1 = cx1 + (Math.random() - 0.5) * 100;
+        const controlY1 = cy1 + (Math.random() - 0.5) * 100;
+        const controlX2 = cx2 + (Math.random() - 0.5) * 100;
+        const controlY2 = cy2 + (Math.random() - 0.5) * 100;
 
-          // Create the quadratic Bézier curve path
-          const curvePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          const d = `M ${cx1},${cy1} Q ${controlX1},${controlY1} ${cx2},${cy2}`; // Quadratic Bézier curve
-          curvePath.setAttribute('d', d);
-          curvePath.setAttribute('class', 'path');
-          
-          // Set up for animation (stroke-dasharray and stroke-dashoffset)
-          const pathLength = curvePath.getTotalLength();
-          curvePath.style.strokeDasharray = pathLength;
-          curvePath.style.strokeDashoffset = pathLength;
+        // Create the path using cubic Bezier curves
+        const linePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const d = `M ${cx1},${cy1} C ${controlX1},${controlY1} ${controlX2},${controlY2} ${cx2},${cy2}`;
+        linePath.setAttribute('d', d);
+        linePath.setAttribute('class', 'path');
+        
+        // Set up for animation (stroke-dasharray and stroke-dashoffset)
+        const pathLength = linePath.getTotalLength();
+        linePath.style.strokeDasharray = pathLength;
+        linePath.style.strokeDashoffset = pathLength;
 
-          svg.appendChild(curvePath);
+        svg.appendChild(linePath);
 
-          // Animate the dashoffset to create the "growing" rhizomatic effect
-          setTimeout(() => {
-            curvePath.animate([{ strokeDashoffset: pathLength }, { strokeDashoffset: 0 }], {
-              duration: 10000, // 10 seconds for the growth effect
-              fill: 'forwards',
-              easing: 'linear',
-            });
-          }, index1 * 500); // Delay for smoother animation
-        }
-      });
+        // Animate the dashoffset to create the "walking" root-like line effect
+        setTimeout(() => {
+          linePath.animate([{ strokeDashoffset: pathLength }, { strokeDashoffset: 0 }], {
+            duration: 3000, // You can adjust the duration here
+            fill: 'forwards',
+            easing: 'linear',
+          });
+        }, index1 * 500); // Add some delay for a smoother animation
+      }
     });
-  }
+  });
+}
+
+
+
+
 
   // Morph the connected points and lines into the initial shape
   function morphToInitialShape() {

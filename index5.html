@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Root Animation with Path</title>
+    <title>Root Animation with Random Directions</title>
     <style>
         svg {
             border: 1px solid black;
+        }
+
+        /* Estilo padrão para as linhas */
+        path {
+            stroke: black;
+            stroke-width: 0.5;
+            fill: none;
         }
     </style>
 </head>
@@ -26,33 +33,49 @@
         }
 
         // Função para desenhar uma linha entre dois pontos com path
-        function createPath(x1, y1, x2, y2) {
+        function createAnimatedPath(x1, y1, x2, y2, totalDuration, delay) {
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const pathLength = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+
             path.setAttribute("d", `M ${x1} ${y1} L ${x2} ${y2}`);
-            path.setAttribute("stroke", "black");
-            path.setAttribute("stroke-width", "0.5");
-            path.setAttribute("fill", "none");
+            path.setAttribute("stroke-dasharray", pathLength);
+            path.setAttribute("stroke-dashoffset", pathLength);
             svg.appendChild(path);
+
+            // Usando setTimeout para adicionar um atraso antes de animar
+            setTimeout(() => {
+                path.animate([
+                    { strokeDashoffset: pathLength }, // Começa totalmente invisível
+                    { strokeDashoffset: 0 }           // Termina completamente desenhado
+                ], {
+                    duration: totalDuration,   // Duração total da animação
+                    easing: 'ease-in-out',     // Animação suave
+                    fill: 'forwards'           // Mantém o estado final
+                });
+            }, delay);
         }
 
         // Função recursiva para gerar as bifurcações (como um L-System)
-        function growBranches(x, y, depth) {
+        function growBranches(x, y, depth, currentDuration, delay, direction) {
             if (depth > maxDepth) return;
 
             const numBranches = Math.floor(randomInRange(1, maxBranches));
             for (let i = 0; i < numBranches; i++) {
-                const angle = randomInRange(-Math.PI / 4, Math.PI / 4);
+                // Adiciona uma variação aleatória ao ângulo da direção original
+                const angle = direction + randomInRange(-Math.PI / 4, Math.PI / 4);
                 const length = randomInRange(20, 50);
 
                 const x2 = x + Math.cos(angle) * length;
                 const y2 = y + Math.sin(angle) * length;
 
-                createPath(x, y, x2, y2);
+                // Cria um caminho animado
+                createAnimatedPath(x, y, x2, y2, currentDuration, delay);
 
-                // Animate the growth of the path
-                setTimeout(() => {
-                    growBranches(x2, y2, depth + 1);
-                }, duration / (maxDepth * numBranches));
+                // Aumenta o delay para que as bifurcações apareçam uma após a outra
+                const newDelay = delay + currentDuration / 3;
+
+                // Recursão para continuar a crescer as bifurcações, passando o ângulo ajustado
+                growBranches(x2, y2, depth + 1, currentDuration * 0.8, newDelay, angle);
             }
         }
 
@@ -62,7 +85,11 @@
                 const x = randomInRange(50, 450);
                 const y = randomInRange(50, 450);
 
-                growBranches(x, y, 0);
+                // Define uma direção inicial aleatória para cada ponto
+                const initialDirection = randomInRange(0, 2 * Math.PI);
+
+                // Inicia o crescimento com um leve atraso e direção inicial aleatória
+                growBranches(x, y, 0, duration / maxDepth, i * 500, initialDirection);
             }
         }
 
