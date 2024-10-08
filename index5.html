@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Animation with Path</title>
+    <style>
+        svg {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <svg id="rootAnimation" width="500" height="500" viewBox="0 0 500 500"></svg>
+
+    <script>
+        const svg = document.getElementById("rootAnimation");
+        const numPoints = 8;
+        const maxDepth = 5;
+        const maxBranches = 3;
+        const duration = 18000; // 18 seconds
+
+        // Função para gerar um número aleatório dentro de um intervalo
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Função para desenhar uma linha entre dois pontos com path
+        function createPath(x1, y1, x2, y2) {
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M ${x1} ${y1} L ${x2} ${y2}`);
+            path.setAttribute("stroke", "black");
+            path.setAttribute("stroke-width", "0.5");
+            path.setAttribute("fill", "none");
+            svg.appendChild(path);
+        }
+
+        // Função recursiva para gerar as bifurcações (como um L-System)
+        function growBranches(x, y, depth) {
+            if (depth > maxDepth) return;
+
+            const numBranches = Math.floor(randomInRange(1, maxBranches));
+            for (let i = 0; i < numBranches; i++) {
+                const angle = randomInRange(-Math.PI / 4, Math.PI / 4);
+                const length = randomInRange(20, 50);
+
+                const x2 = x + Math.cos(angle) * length;
+                const y2 = y + Math.sin(angle) * length;
+
+                createPath(x, y, x2, y2);
+
+                // Animate the growth of the path
+                setTimeout(() => {
+                    growBranches(x2, y2, depth + 1);
+                }, duration / (maxDepth * numBranches));
+            }
+        }
+
+        // Função para inicializar os pontos e começar o crescimento das raízes
+        function startAnimation() {
+            for (let i = 0; i < numPoints; i++) {
+                const x = randomInRange(50, 450);
+                const y = randomInRange(50, 450);
+
+                growBranches(x, y, 0);
+            }
+        }
+
+        startAnimation();
+    </script>
+</body>
+</html>
